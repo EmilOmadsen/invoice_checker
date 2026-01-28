@@ -217,10 +217,6 @@ def get_requirements_as_text(invoice_type: InvoiceType = "paypal") -> str:
         lines.append("### Personlige oplysninger til skatteindberetning:")
         for item in PAYPAL_REQUIREMENTS["personal_info"]["items"]:
             lines.append(f"- **{item['name']}**: {item['description']}")
-        lines.append("")
-        lines.append("### Creator/kunstner information (anbefalet):")
-        for item in PAYPAL_REQUIREMENTS["creator_info"]["items"]:
-            lines.append(f"- **{item['name']}**: {item['description']}")
     else:
         lines.append("## BANKOVERFØRSELS-SPECIFIKKE KRAV (PÅKRÆVET)")
         lines.append("")
