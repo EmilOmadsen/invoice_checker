@@ -40,8 +40,8 @@ En korrekt PayPal faktura skal have følgende struktur og sektioner:
 - Subtotal
 - SAMLET PRIS med valuta
 
-### 5. BEMÆRKNINGER TIL KUNDEN (Vigtig sektion!)
-Denne sektion SKAL indeholde:
+### 5. BEMÆRKNINGER TIL KUNDEN (Valgfri sektion)
+Denne sektion KAN indeholde (men er ikke påkrævet):
 - Modtagers firmaoplysninger (The Label Sunday, adresse, email)
 - Creator/Kunstner information med kunstnernavn i parentes (f.eks. "Creator: Linus Nordin (testosteronexxtren)")
 - Fødselsdato (f.eks. "Date of birth: 2007-09-07")
@@ -76,6 +76,9 @@ VIGTIGE REGLER:
 - Alle tekster skal være på DANSK
 - VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
+- VIGTIGT: Creator/kunstner information med kunstnernavn i parentes er IKKE påkrævet - det er kun en anbefaling.
+- VIGTIGT: "Bemærkninger til kunden" sektionen er VALGFRI - markér det IKKE som manglende.
+- VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -172,6 +175,9 @@ IMPORTANT RULES:
 - All text responses must be in ENGLISH
 - IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
+- IMPORTANT: Creator/artist information with artist name in parentheses is NOT required - it is only a recommendation.
+- IMPORTANT: "Notes to customer" section is OPTIONAL - do NOT mark it as missing.
+- IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -505,6 +511,9 @@ VIGTIGE REGLER:
 - Alle tekster skal være på DANSK
 - VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
+- VIGTIGT: Creator/kunstner information med kunstnernavn i parentes er IKKE påkrævet - det er kun en anbefaling.
+- VIGTIGT: "Bemærkninger til kunden" sektionen er VALGFRI - markér det IKKE som manglende.
+- VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -576,6 +585,9 @@ IMPORTANT RULES:
 - All text responses must be in ENGLISH
 - IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
+- IMPORTANT: Creator/artist information with artist name in parentheses is NOT required - it is only a recommendation.
+- IMPORTANT: "Notes to customer" section is OPTIONAL - do NOT mark it as missing.
+- IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
 
 {IDEAL_PAYPAL_LAYOUT}
 
