@@ -74,6 +74,7 @@ VIGTIGE REGLER:
 - Hvis noget ikke er tydeligt angivet, markér det som "missing" eller "unclear"
 - Vær striks men fair i din vurdering
 - Alle tekster skal være på DANSK
+- VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -168,6 +169,7 @@ IMPORTANT RULES:
 - If something is not clearly stated, mark it as "missing" or "unclear"
 - Be strict but fair in your evaluation
 - All text responses must be in ENGLISH
+- IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -485,6 +487,7 @@ VIGTIGE REGLER:
 - Hvis noget ikke er tydeligt synligt, markér det som "missing" eller "unclear"
 - Vær striks men fair i din vurdering
 - Alle tekster skal være på DANSK
+- VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -554,6 +557,7 @@ IMPORTANT RULES:
 - If something is not clearly visible, mark it as "missing" or "unclear"
 - Be strict but fair in your evaluation
 - All text responses must be in ENGLISH
+- IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
 
 {IDEAL_PAYPAL_LAYOUT}
 

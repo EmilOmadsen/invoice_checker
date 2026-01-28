@@ -25,6 +25,7 @@ export const translations = {
     validationChecks: "Valideringstjek",
     missingItems: "Manglende elementer",
     warnings: "Advarsler",
+    issues: "Problemer",
     layoutSuggestions: "Layout-forslag",
     summary: "Opsummering",
 
@@ -77,6 +78,7 @@ export const translations = {
     validationChecks: "Validation Checks",
     missingItems: "Missing Items",
     warnings: "Warnings",
+    issues: "Issues",
     layoutSuggestions: "Layout Suggestions",
     summary: "Summary",
 

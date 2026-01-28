@@ -129,29 +129,20 @@ export function ResultChecklist({ result, language }: ResultChecklistProps) {
         </div>
       </div>
 
-      {/* Missing Items */}
-      {result.missing_items.length > 0 && (
+      {/* Issues (Combined Missing Items and Warnings) */}
+      {(result.missing_items.length > 0 || result.warnings.length > 0) && (
         <div className="space-y-3">
-          <h3 className="text-lg font-medium text-red-900">{t(language, "missingItems")}</h3>
+          <h3 className="text-lg font-medium text-red-900">{t(language, "issues")}</h3>
           <ul className="bg-red-50 rounded-lg p-4 space-y-2">
             {result.missing_items.map((item, index) => (
-              <li key={index} className="flex items-center gap-2 text-red-700">
+              <li key={`missing-${index}`} className="flex items-center gap-2 text-red-700">
                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full" />
                 {item}
               </li>
             ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Warnings */}
-      {result.warnings.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="text-lg font-medium text-yellow-900">{t(language, "warnings")}</h3>
-          <ul className="bg-yellow-50 rounded-lg p-4 space-y-2">
             {result.warnings.map((warning, index) => (
-              <li key={index} className="flex items-center gap-2 text-yellow-700">
-                <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full" />
+              <li key={`warning-${index}`} className="flex items-center gap-2 text-red-700">
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full" />
                 {warning}
               </li>
             ))}
