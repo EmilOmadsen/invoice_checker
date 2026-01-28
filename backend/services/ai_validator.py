@@ -270,7 +270,13 @@ Der er INGEN separat "afsender/seller" information påkrævet - betalingsmodtage
 2. **Beskrivelse af ydelse** - Hvad der betales for
 3. **Beløb og valuta** - Totalbeløb med valuta
 4. **Modtager (Sunday)** - The Label Sunday's navn og adresse
-5. **Betalingsmodtager info** - Navn, adresse, land, fødselsdato (for udlændinge), TIN/skattenummer
+5. **Betalingsmodtager info** - Følgende felter skal tjekkes SEPARAT:
+   - Navn (fulde navn)
+   - Adresse (gadeadresse) - tjek som SEPARAT felt
+   - Postnummer + by - tjek som SEPARAT felt
+   - Land
+   - Fødselsdato (for udlændinge)
+   - TIN/skattenummer
 6. **Bankoplysninger** - Banknavn, kontonummer/IBAN, SWIFT/BIC
 
 ## IKKE PÅKRÆVET FOR BANKOVERFØRSEL
@@ -284,6 +290,7 @@ VIGTIGE REGLER:
 - Basér din vurdering UDELUKKENDE på den angivne fakturatekst
 - Vær fair i din vurdering - hvis alle PÅKRÆVEDE felter er til stede, skal status være "approved"
 - Alle tekster skal være på DANSK
+- VIGTIGT: Adresse og Postnummer+by er TO SEPARATE felter. Hvis et af dem mangler, skal det rapporteres som et separat manglende felt i missing_items og checks.
 
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
@@ -332,7 +339,13 @@ There is NO separate "sender/seller" information required - the payment recipien
 2. **Service description** - What is being paid for
 3. **Amount and currency** - Total amount with currency
 4. **Recipient (Sunday)** - The Label Sunday's name and address
-5. **Payment recipient info** - Name, address, country, birth date (for foreigners), TIN/tax number
+5. **Payment recipient info** - The following fields must be checked SEPARATELY:
+   - Name (full name)
+   - Address (street address) - check as SEPARATE field
+   - Postal code + city - check as SEPARATE field
+   - Country
+   - Birth date (for foreigners)
+   - TIN/tax number
 6. **Bank details** - Bank name, account number/IBAN, SWIFT/BIC
 
 ## NOT REQUIRED FOR BANK TRANSFER
@@ -346,6 +359,7 @@ IMPORTANT RULES:
 - Base your evaluation STRICTLY on the provided invoice text
 - Be fair in your evaluation - if all REQUIRED fields are present, status should be "approved"
 - All text responses must be in ENGLISH
+- IMPORTANT: Address and Postal code+city are TWO SEPARATE fields. If one is missing, it should be reported as a separate missing item in missing_items and checks.
 
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
@@ -636,7 +650,13 @@ Der er INGEN separat "afsender/seller" information påkrævet - betalingsmodtage
 2. **Beskrivelse af ydelse** - Hvad der betales for
 3. **Beløb og valuta** - Totalbeløb med valuta
 4. **Modtager (Sunday)** - The Label Sunday's navn og adresse
-5. **Betalingsmodtager info** - Navn, adresse, land, fødselsdato (for udlændinge), TIN/skattenummer
+5. **Betalingsmodtager info** - Følgende felter skal tjekkes SEPARAT:
+   - Navn (fulde navn)
+   - Adresse (gadeadresse) - tjek som SEPARAT felt
+   - Postnummer + by - tjek som SEPARAT felt
+   - Land
+   - Fødselsdato (for udlændinge)
+   - TIN/skattenummer
 6. **Bankoplysninger** - Banknavn, kontonummer/IBAN, SWIFT/BIC
 
 ## IKKE PÅKRÆVET FOR BANKOVERFØRSEL
@@ -650,6 +670,7 @@ VIGTIGE REGLER:
 - Gæt IKKE på manglende information
 - Vær fair i din vurdering - hvis alle PÅKRÆVEDE felter er til stede, skal status være "approved"
 - Alle tekster skal være på DANSK
+- VIGTIGT: Adresse og Postnummer+by er TO SEPARATE felter. Hvis et af dem mangler, skal det rapporteres som et separat manglende felt i missing_items og checks.
 
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
@@ -692,7 +713,13 @@ There is NO separate "sender/seller" information required - the payment recipien
 2. **Service description** - What is being paid for
 3. **Amount and currency** - Total amount with currency
 4. **Recipient (Sunday)** - The Label Sunday's name and address
-5. **Payment recipient info** - Name, address, country, birth date (for foreigners), TIN/tax number
+5. **Payment recipient info** - The following fields must be checked SEPARATELY:
+   - Name (full name)
+   - Address (street address) - check as SEPARATE field
+   - Postal code + city - check as SEPARATE field
+   - Country
+   - Birth date (for foreigners)
+   - TIN/tax number
 6. **Bank details** - Bank name, account number/IBAN, SWIFT/BIC
 
 ## NOT REQUIRED FOR BANK TRANSFER
@@ -706,6 +733,7 @@ IMPORTANT RULES:
 - Do NOT guess missing information
 - Be fair in your evaluation - if all REQUIRED fields are present, status should be "approved"
 - All text responses must be in ENGLISH
+- IMPORTANT: Address and Postal code+city are TWO SEPARATE fields. If one is missing, it should be reported as a separate missing item in missing_items and checks.
 
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
