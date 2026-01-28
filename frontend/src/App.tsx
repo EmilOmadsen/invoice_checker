@@ -3,7 +3,6 @@ import { FileUpload } from "./components/FileUpload";
 import { ResultChecklist } from "./components/ResultChecklist";
 import { InvoiceTypeSelector } from "./components/InvoiceTypeSelector";
 import { LanguageSelector } from "./components/LanguageSelector";
-import { IdealLayoutPreviewInline } from "./components/IdealLayoutPreviewInline";
 import { useInvoiceAnalysis } from "./hooks/useInvoiceAnalysis";
 import { t } from "./i18n/translations";
 import type { InvoiceType, Language } from "./types/invoice";
@@ -209,42 +208,28 @@ function App() {
             </div>
           )}
 
-          {/* Results and Preview Section - Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Results Section */}
-            {result && (
-              <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <span
-                    className={`
-                    inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                    ${
-                      result.invoice_type === "paypal"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
-                    }
-                  `}
-                  >
-                    {result.invoice_type === "paypal"
-                      ? t(language, "paypal")
-                      : t(language, "bankTransfer")}
-                  </span>
-                </div>
-                <ResultChecklist result={result} language={language} />
-              </section>
-            )}
-
-            {/* Ideal Layout Preview - Only for PayPal */}
-            {invoiceType === "paypal" && (
-              <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <IdealLayoutPreviewInline
-                  language={language}
-                  invoiceType={invoiceType}
-                  extractedData={result?.extracted_data}
-                />
-              </section>
-            )}
-          </div>
+          {/* Results Section */}
+          {result && (
+            <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <span
+                  className={`
+                  inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                  ${
+                    result.invoice_type === "paypal"
+                      ? "bg-blue-100 text-blue-800"
+                      : "bg-green-100 text-green-800"
+                  }
+                `}
+                >
+                  {result.invoice_type === "paypal"
+                    ? t(language, "paypal")
+                    : t(language, "bankTransfer")}
+                </span>
+              </div>
+              <ResultChecklist result={result} language={language} />
+            </section>
+          )}
         </div>
       </main>
 

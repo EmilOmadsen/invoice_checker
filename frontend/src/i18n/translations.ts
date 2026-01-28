@@ -51,8 +51,6 @@ export const translations = {
     issue: "Problem",
     suggestion: "Forslag",
 
-    // Layout preview
-    viewIdealLayout: "Se ideelt layout",
   },
   en: {
     // Header
@@ -104,8 +102,6 @@ export const translations = {
     issue: "Issue",
     suggestion: "Suggestion",
 
-    // Layout preview
-    viewIdealLayout: "View ideal layout",
   },
 } as const;
 
