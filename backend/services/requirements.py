@@ -111,21 +111,6 @@ PAYPAL_REQUIREMENTS = {
                 "id": "tax_number",
                 "name": "Skattenummer (TIN/CPR/Personal tax number)",
                 "description": "Tax identification number - can be CPR (Denmark), personnummer (Sweden), TIN, or similar"
-            },
-            {
-                "id": "vat_status",
-                "name": "Momsstatus",
-                "description": "Statement about VAT registration status (e.g., 'Not VAT registered' or VAT number if registered)"
-            }
-        ]
-    },
-    "creator_info": {
-        "description": "Creator/artist information (recommended)",
-        "items": [
-            {
-                "id": "creator_name",
-                "name": "Creator/Kunstnernavn",
-                "description": "Artist or creator name if different from legal name (e.g., 'Creator: Linus Nordin (testosteronexxtren)')"
             }
         ]
     }
