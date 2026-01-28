@@ -75,6 +75,7 @@ VIGTIGE REGLER:
 - Vær striks men fair i din vurdering
 - Alle tekster skal være på DANSK
 - VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
+- VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -170,6 +171,7 @@ IMPORTANT RULES:
 - Be strict but fair in your evaluation
 - All text responses must be in ENGLISH
 - IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
+- IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -488,6 +490,7 @@ VIGTIGE REGLER:
 - Vær striks men fair i din vurdering
 - Alle tekster skal være på DANSK
 - VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
+- VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
 
 {IDEAL_PAYPAL_LAYOUT}
 
@@ -558,6 +561,7 @@ IMPORTANT RULES:
 - Be strict but fair in your evaluation
 - All text responses must be in ENGLISH
 - IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
+- IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
 
 {IDEAL_PAYPAL_LAYOUT}
 
