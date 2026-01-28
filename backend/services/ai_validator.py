@@ -61,12 +61,11 @@ def get_validation_prompt(invoice_text: str, invoice_type: InvoiceType, language
     requirements_text = get_requirements_as_text(invoice_type.value)
 
     if invoice_type == InvoiceType.PAYPAL:
-        # PayPal invoice - include layout validation
+        # PayPal invoice - no layout validation
         if language == Language.DANISH:
             return f"""Du er en fakturavalidator for The Label Sunday ApS.
 
 Du skal analysere den uploadede faktura og verificere om den opfylder alle krav for en **PayPal**-faktura.
-Du skal OGSÅ vurdere fakturaens layout og sammenligne med det ideelle layout beskrevet nedenfor.
 
 VIGTIGE REGLER:
 - Gæt IKKE på manglende information
@@ -74,13 +73,8 @@ VIGTIGE REGLER:
 - Hvis noget ikke er tydeligt angivet, markér det som "missing" eller "unclear"
 - Vær striks men fair i din vurdering
 - Alle tekster skal være på DANSK
-- VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
-- VIGTIGT: Creator/kunstner information med kunstnernavn i parentes er IKKE påkrævet - det er kun en anbefaling.
-- VIGTIGT: "Bemærkninger til kunden" sektionen er VALGFRI - markér det IKKE som manglende.
 - VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
-
-{IDEAL_PAYPAL_LAYOUT}
 
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
@@ -98,13 +92,7 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
   ],
   "missing_items": ["Liste over manglende eller ugyldige felter"],
   "warnings": ["Liste over uklare eller potentielt problematiske elementer"],
-  "layout_suggestions": [
-    {{
-      "section": "Sektionen der kan forbedres",
-      "issue": "Hvad der mangler eller er forkert",
-      "suggestion": "Konkret forslag til hvordan det skal se ud"
-    }}
-  ],
+  "layout_suggestions": [],
   "summary": "En kort menneskelæselig konklusion på dansk",
   "extracted_data": {{
     "sender_name": "Afsenders fulde navn eller null",
@@ -136,19 +124,6 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
 - "missing_information": Nogle påkrævede felter mangler, men fakturaen er ellers gyldig
 - "invalid": Kritiske problemer fundet (forkert køber, inkonsistente data, etc.)
 
-## LAYOUT SUGGESTIONS REGLER
-- Sammenlign fakturaens struktur med det IDEELLE LAYOUT ovenfor
-- Giv forslag til ALLE forbedringer - både små og store
-- Fokusér på: manglende sektioner, forkert organisering, manglende oplysninger i "Bemærkninger til kunden" sektionen
-- Typiske problemer at kigge efter:
-  * Mangler "FAKTURERING" titel i header
-  * Mangler QR-kode (anbefalet men ikke påkrævet)
-  * Mangler "Bemærkninger til kunden" sektion med firmaoplysninger, creator info, fødselsdato, skattenummer
-  * Forkert struktur på linjeposter
-  * Manglende kontaktoplysninger
-- Hvis fakturaen PERFEKT matcher det ideelle layout med alle sektioner og information, returner en TOM liste []
-- Vær specifik om hvad der skal ændres og hvordan
-
 ## FAKTURAKRAV DER SKAL TJEKKES
 
 {requirements_text}
@@ -165,7 +140,6 @@ Analysér nu fakturaen og svar med UDELUKKENDE JSON-resultatet. Inkludér ingen 
             return f"""You are an invoice validator for The Label Sunday ApS.
 
 You need to analyze the uploaded invoice and verify if it meets all requirements for a **PayPal** invoice.
-You should ALSO evaluate the invoice layout and compare it with the ideal layout described below.
 
 IMPORTANT RULES:
 - Do NOT guess missing information
@@ -173,13 +147,8 @@ IMPORTANT RULES:
 - If something is not clearly stated, mark it as "missing" or "unclear"
 - Be strict but fair in your evaluation
 - All text responses must be in ENGLISH
-- IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
-- IMPORTANT: Creator/artist information with artist name in parentheses is NOT required - it is only a recommendation.
-- IMPORTANT: "Notes to customer" section is OPTIONAL - do NOT mark it as missing.
 - IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
-
-{IDEAL_PAYPAL_LAYOUT}
 
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
@@ -197,13 +166,7 @@ You MUST respond with ONLY valid JSON in this exact format:
   ],
   "missing_items": ["List of missing or invalid fields"],
   "warnings": ["List of unclear or potentially problematic items"],
-  "layout_suggestions": [
-    {{
-      "section": "The section that can be improved",
-      "issue": "What is missing or incorrect",
-      "suggestion": "Specific suggestion for how it should look"
-    }}
-  ],
+  "layout_suggestions": [],
   "summary": "A short human-readable conclusion in English",
   "extracted_data": {{
     "sender_name": "Sender's full name or null",
@@ -234,19 +197,6 @@ You MUST respond with ONLY valid JSON in this exact format:
 - "approved": All mandatory fields are present and valid
 - "missing_information": Some required fields are missing but invoice is otherwise valid
 - "invalid": Critical issues found (wrong buyer, inconsistent data, etc.)
-
-## LAYOUT SUGGESTIONS RULES
-- Compare the invoice structure with the IDEAL LAYOUT above
-- Provide suggestions for ALL improvements - both small and large
-- Focus on: missing sections, incorrect organization, missing information in "Notes to customer" section
-- Common issues to look for:
-  * Missing "FAKTURERING" (or "INVOICE") title in header
-  * Missing QR code (recommended but not required)
-  * Missing "Notes to customer" section with company info, creator info, birth date, tax number
-  * Incorrect line items structure
-  * Missing contact information
-- If the invoice PERFECTLY matches the ideal layout with all sections and information, return an EMPTY list []
-- Be specific about what needs to be changed and how
 
 ## INVOICE REQUIREMENTS TO CHECK
 
@@ -509,13 +459,8 @@ VIGTIGE REGLER:
 - Hvis noget ikke er tydeligt synligt, markér det som "missing" eller "unclear"
 - Vær striks men fair i din vurdering
 - Alle tekster skal være på DANSK
-- VIGTIGT: Momsstatus (VAT registration) er KUN påkrævet hvis fakturaen IKKE indeholder et skattenummer (TIN/CPR/personnummer). Hvis skattenummer er til stede, er momsstatus valgfri.
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
-- VIGTIGT: Creator/kunstner information med kunstnernavn i parentes er IKKE påkrævet - det er kun en anbefaling.
-- VIGTIGT: "Bemærkninger til kunden" sektionen er VALGFRI - markér det IKKE som manglende.
 - VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
-
-{IDEAL_PAYPAL_LAYOUT}
 
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
@@ -533,13 +478,7 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
   ],
   "missing_items": ["Liste over manglende eller ugyldige felter"],
   "warnings": ["Liste over uklare eller potentielt problematiske elementer"],
-  "layout_suggestions": [
-    {{
-      "section": "Sektionen der kan forbedres",
-      "issue": "Hvad der mangler eller er forkert",
-      "suggestion": "Konkret forslag til hvordan det skal se ud"
-    }}
-  ],
+  "layout_suggestions": [],
   "summary": "En kort menneskelæselig konklusion på dansk",
   "extracted_data": {{
     "sender_name": "Afsenders fulde navn eller null",
@@ -583,13 +522,8 @@ IMPORTANT RULES:
 - If something is not clearly visible, mark it as "missing" or "unclear"
 - Be strict but fair in your evaluation
 - All text responses must be in ENGLISH
-- IMPORTANT: VAT registration status is ONLY required if the invoice does NOT contain a tax number (TIN/CPR/personal number). If a tax number is present, VAT status is optional.
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
-- IMPORTANT: Creator/artist information with artist name in parentheses is NOT required - it is only a recommendation.
-- IMPORTANT: "Notes to customer" section is OPTIONAL - do NOT mark it as missing.
 - IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
-
-{IDEAL_PAYPAL_LAYOUT}
 
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
@@ -607,13 +541,7 @@ You MUST respond with ONLY valid JSON in this exact format:
   ],
   "missing_items": ["List of missing or invalid fields"],
   "warnings": ["List of unclear or potentially problematic items"],
-  "layout_suggestions": [
-    {{
-      "section": "The section that can be improved",
-      "issue": "What is missing or incorrect",
-      "suggestion": "Specific suggestion for how it should look"
-    }}
-  ],
+  "layout_suggestions": [],
   "summary": "A short human-readable conclusion in English",
   "extracted_data": {{
     "sender_name": "Sender's full name or null",
