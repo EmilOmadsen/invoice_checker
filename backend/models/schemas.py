@@ -91,3 +91,11 @@ class ValidationResult(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     invoice_type: InvoiceType = InvoiceType.PAYPAL
+
+
+class InvoicePayload(BaseModel):
+    """Payload for Copilot Agent Flow JSON file transfer."""
+    contentBytes: str  # Base64-encoded PDF content
+    name: str  # Filename
+    invoice_type: InvoiceType = InvoiceType.PAYPAL
+    language: Language = Language.DANISH

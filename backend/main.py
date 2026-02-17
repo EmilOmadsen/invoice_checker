@@ -1,4 +1,5 @@
 import os
+import base64
 from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,7 +7,7 @@ from dotenv import load_dotenv
 
 from services.pdf_parser import extract_text_from_pdf, pdf_to_images_base64
 from services.ai_validator import validate_invoice, validate_invoice_with_image
-from models.schemas import ValidationResult, InvoiceType, Language
+from models.schemas import ValidationResult, InvoiceType, Language, InvoicePayload
 
 # Load environment variables from .env file in the same directory as this file
 env_path = Path(__file__).parent / ".env"
@@ -134,6 +135,105 @@ async def analyze_invoice(
             )
 
     return result
+
+
+@app.post("/api/analyze-invoice")
+async def analyze_invoice_json(payload: InvoicePayload):
+    """
+    Analyze an invoice PDF sent as JSON with base64-encoded content.
+
+    This endpoint is designed for Microsoft Copilot Agent Flow integration.
+
+    Request body (Content-Type: application/json):
+    - **contentBytes**: Base64-encoded PDF file content
+    - **name**: Filename (e.g., "invoice.pdf")
+    - **invoice_type**: Type of invoice ("paypal" or "bank_transfer"), defaults to "paypal"
+    - **language**: Response language ("da" or "en"), defaults to "da"
+
+    Returns:
+    - **status**: "pass" or "fail"
+    - **logs**: Detailed validation results
+    """
+    # Decode base64 content
+    try:
+        content = base64.b64decode(payload.contentBytes)
+    except Exception:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid base64 file content"
+        )
+
+    # Check if decoded content is empty
+    if not content:
+        raise HTTPException(
+            status_code=400,
+            detail="Decoded file content is empty"
+        )
+
+    # Validate file extension
+    allowed_extensions = {".pdf"}
+    file_ext = os.path.splitext(payload.name)[1].lower() if payload.name else ""
+
+    if file_ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type. Allowed types: {', '.join(allowed_extensions)}"
+        )
+
+    # Extract text from PDF
+    try:
+        invoice_text = extract_text_from_pdf(content)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to extract text from PDF: {str(e)}"
+        )
+
+    # Validate the invoice
+    try:
+        if invoice_text == "[IMAGE_PDF]":
+            # Convert PDF to images and use vision API
+            images = pdf_to_images_base64(content)
+            if not images:
+                raise HTTPException(
+                    status_code=500,
+                    detail="Could not convert PDF to images."
+                )
+            result = await validate_invoice_with_image(images, payload.invoice_type, payload.language)
+        else:
+            # Validate with AI using text
+            result = await validate_invoice(invoice_text, payload.invoice_type, payload.language)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to validate invoice: {str(e)}"
+        )
+
+    # Transform result to Copilot-compatible format
+    status = "pass" if result.overall_status.value == "approved" else "fail"
+
+    return {
+        "status": status,
+        "logs": {
+            "overall_status": result.overall_status.value,
+            "invoice_type": result.invoice_type.value,
+            "checks": [
+                {
+                    "requirement": check.requirement,
+                    "status": check.status.value,
+                    "found_value": check.found_value,
+                    "comment": check.comment
+                }
+                for check in result.checks
+            ],
+            "missing_items": result.missing_items,
+            "warnings": result.warnings,
+            "summary": result.summary,
+            "extracted_data": result.extracted_data.model_dump() if result.extracted_data else None
+        }
+    }
 
 
 @app.get("/api/requirements")
