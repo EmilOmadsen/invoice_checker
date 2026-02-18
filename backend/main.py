@@ -253,7 +253,10 @@ async def analyze_invoice_json(payload: InvoicePayload):
         error = f"- MISSING: {check.requirement}"
         if check.comment:
             error += f"\n  Reason: {check.comment}"
-        error += f"\n  Fix: Please add {check.requirement.lower()} to the invoice."
+        if check.fix_recommendation:
+            error += f"\n  How to fix: {check.fix_recommendation}"
+        else:
+            error += f"\n  How to fix: Please add {check.requirement.lower()} to the invoice."
         errors.append(error)
     for check in unclear_checks:
         error = f"- ERROR: {check.requirement}"
@@ -261,7 +264,10 @@ async def analyze_invoice_json(payload: InvoicePayload):
             error += f" (found: {check.found_value})"
         if check.comment:
             error += f"\n  Reason: {check.comment}"
-        error += f"\n  Fix: Please correct or clarify {check.requirement.lower()} on the invoice."
+        if check.fix_recommendation:
+            error += f"\n  How to fix: {check.fix_recommendation}"
+        else:
+            error += f"\n  How to fix: Please correct or clarify {check.requirement.lower()} on the invoice."
         errors.append(error)
     for warning in (result.warnings or []):
         errors.append(f"- WARNING: {warning}")

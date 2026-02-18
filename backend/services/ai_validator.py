@@ -76,6 +76,18 @@ VIGTIGE REGLER:
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
 - VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
 
+## VIGTIGT: RETTELSESANBEFALINGER
+For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
+
+Eksempler på GODE fix_recommendation:
+- "Tilføj modtagerens firmanavn 'The Label Sunday ApS' og adresse 'Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' under en 'Send faktura til' sektion."
+- "Tilføj din fødselsdato i bemærkninger, f.eks.: 'Fødselsdato: 1995-03-15'"
+- "Tilføj dit skattenummer med landekode i bemærkninger, f.eks.: 'Skattenummer (SE): 123456-7890'"
+
+Eksempler på DÅRLIGE fix_recommendation (for vage - GØR IKKE DETTE):
+- "Tilføj venligst modtagers firma på fakturaen."
+- "Ret eller tydeliggør skattenummeret."
+
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
 Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
@@ -87,7 +99,8 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "requirement": "Navn på kravet",
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
-      "comment": "Kort forklaring på dansk"
+      "comment": "Kort forklaring på dansk",
+      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler på hvordan problemet løses. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende eller ugyldige felter"],
@@ -150,6 +163,21 @@ IMPORTANT RULES:
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
 - IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
 
+## CRITICAL: FIX RECOMMENDATIONS
+For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
+
+Examples of GOOD fix_recommendation:
+- "Add the recipient company name 'The Label Sunday ApS' and address 'Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' to the invoice under a 'Bill To' or 'Send Invoice To' section."
+- "Add your date of birth in the Notes section, e.g.: 'Date of birth: 1995-03-15'"
+- "Add your tax identification number with country code in the Notes section, e.g.: 'Personal tax number (SE): 123456-7890'"
+- "Add the recipient email 'info@thelabelsunday.com' in the 'Send Invoice To' field."
+- "The invoice is missing a service description. Add a clear description of the work, e.g.: 'TikTok promotion / 2 videos for @brandname'"
+
+Examples of BAD fix_recommendation (too vague - DO NOT do this):
+- "Please add recipient company to the invoice."
+- "Please correct or clarify the tax number."
+- "Add the missing information."
+
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
 You MUST respond with ONLY valid JSON in this exact format:
@@ -161,7 +189,8 @@ You MUST respond with ONLY valid JSON in this exact format:
       "requirement": "Name of the requirement",
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
-      "comment": "Brief explanation in English"
+      "comment": "Brief explanation in English",
+      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this issue. null if status is present."
     }}
   ],
   "missing_items": ["List of missing or invalid fields"],
@@ -248,6 +277,18 @@ VIGTIGE REGLER:
 - Alle tekster skal være på DANSK
 - VIGTIGT: Adresse og Postnummer+by er TO SEPARATE felter. Hvis et af dem mangler, skal det rapporteres som et separat manglende felt i missing_items og checks.
 
+## VIGTIGT: RETTELSESANBEFALINGER
+For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
+
+Eksempler på GODE fix_recommendation:
+- "Tilføj 'The Label Sunday ApS, Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' som modtager/køber på fakturaen."
+- "Tilføj din fulde gadeadresse (f.eks.: 'Storgatan 123') i betalingsmodtager-sektionen."
+- "Tilføj din banks SWIFT/BIC-kode (f.eks.: 'NDEASESS') ved siden af dit IBAN-nummer."
+
+Eksempler på DÅRLIGE fix_recommendation (for vage - GØR IKKE DETTE):
+- "Tilføj venligst modtagers adresse."
+- "Tilføj bankoplysninger til fakturaen."
+
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
 Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
@@ -259,7 +300,8 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "requirement": "Navn på kravet",
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
-      "comment": "Kort forklaring på dansk"
+      "comment": "Kort forklaring på dansk",
+      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler på hvordan problemet løses. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende PÅKRÆVEDE felter - ignorer valgfrie felter"],
@@ -317,6 +359,19 @@ IMPORTANT RULES:
 - All text responses must be in ENGLISH
 - IMPORTANT: Address and Postal code+city are TWO SEPARATE fields. If one is missing, it should be reported as a separate missing item in missing_items and checks.
 
+## CRITICAL: FIX RECOMMENDATIONS
+For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
+
+Examples of GOOD fix_recommendation:
+- "Add 'The Label Sunday ApS, Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' as the recipient/buyer on the invoice."
+- "Add your full street address (e.g.: '123 Main Street') in the payment recipient section."
+- "Add your bank's SWIFT/BIC code (e.g.: 'NDEASESS') next to your IBAN number."
+- "Add your date of birth, e.g.: 'Date of birth: 1995-03-15'"
+
+Examples of BAD fix_recommendation (too vague - DO NOT do this):
+- "Please add the recipient address."
+- "Add bank details to the invoice."
+
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
 You MUST respond with ONLY valid JSON in this exact format:
@@ -328,7 +383,8 @@ You MUST respond with ONLY valid JSON in this exact format:
       "requirement": "Name of the requirement",
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
-      "comment": "Brief explanation in English"
+      "comment": "Brief explanation in English",
+      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this issue. null if status is present."
     }}
   ],
   "missing_items": ["List of missing REQUIRED fields - ignore optional fields"],
@@ -411,7 +467,8 @@ async def validate_invoice(invoice_text: str, invoice_type: InvoiceType, languag
             requirement=check["requirement"],
             status=CheckStatus(check["status"]),
             found_value=check.get("found_value"),
-            comment=check["comment"]
+            comment=check["comment"],
+            fix_recommendation=check.get("fix_recommendation")
         )
         for check in result_dict.get("checks", [])
     ]
@@ -462,6 +519,9 @@ VIGTIGE REGLER:
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
 - VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
 
+## VIGTIGT: RETTELSESANBEFALINGER
+For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
+
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
 Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
@@ -473,7 +533,8 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "requirement": "Navn på kravet",
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
-      "comment": "Kort forklaring på dansk"
+      "comment": "Kort forklaring på dansk",
+      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende eller ugyldige felter"],
@@ -525,6 +586,9 @@ IMPORTANT RULES:
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
 - IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
 
+## CRITICAL: FIX RECOMMENDATIONS
+For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
+
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
 You MUST respond with ONLY valid JSON in this exact format:
@@ -536,7 +600,8 @@ You MUST respond with ONLY valid JSON in this exact format:
       "requirement": "Name of the requirement",
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
-      "comment": "Brief explanation in English"
+      "comment": "Brief explanation in English",
+      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this. null if status is present."
     }}
   ],
   "missing_items": ["List of missing or invalid fields"],
@@ -612,6 +677,9 @@ VIGTIGE REGLER:
 - Alle tekster skal være på DANSK
 - VIGTIGT: Adresse og Postnummer+by er TO SEPARATE felter. Hvis et af dem mangler, skal det rapporteres som et separat manglende felt i missing_items og checks.
 
+## VIGTIGT: RETTELSESANBEFALINGER
+For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
+
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
 Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
@@ -623,7 +691,8 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "requirement": "Navn på kravet",
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
-      "comment": "Kort forklaring på dansk"
+      "comment": "Kort forklaring på dansk",
+      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende PÅKRÆVEDE felter - ignorer valgfrie felter"],
@@ -675,6 +744,9 @@ IMPORTANT RULES:
 - All text responses must be in ENGLISH
 - IMPORTANT: Address and Postal code+city are TWO SEPARATE fields. If one is missing, it should be reported as a separate missing item in missing_items and checks.
 
+## CRITICAL: FIX RECOMMENDATIONS
+For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
+
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
 You MUST respond with ONLY valid JSON in this exact format:
@@ -686,7 +758,8 @@ You MUST respond with ONLY valid JSON in this exact format:
       "requirement": "Name of the requirement",
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
-      "comment": "Brief explanation in English"
+      "comment": "Brief explanation in English",
+      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this. null if status is present."
     }}
   ],
   "missing_items": ["List of missing REQUIRED fields - ignore optional fields"],
@@ -778,7 +851,8 @@ async def validate_invoice_with_image(images_base64: list[str], invoice_type: In
             requirement=check["requirement"],
             status=CheckStatus(check["status"]),
             found_value=check.get("found_value"),
-            comment=check["comment"]
+            comment=check["comment"],
+            fix_recommendation=check.get("fix_recommendation")
         )
         for check in result_dict.get("checks", [])
     ]

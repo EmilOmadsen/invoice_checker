@@ -30,6 +30,7 @@ class CheckResult(BaseModel):
     status: CheckStatus
     found_value: Optional[str] = None
     comment: str
+    fix_recommendation: Optional[str] = None
 
 
 class LayoutSuggestion(BaseModel):
