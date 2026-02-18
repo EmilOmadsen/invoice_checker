@@ -241,46 +241,53 @@ async def analyze_invoice_json(payload: InvoicePayload):
     status = "pass" if result.overall_status.value == "approved" else "fail"
 
     # Build readable logs for Copilot Studio chat display
-    # Group checks by status for cleaner output
     present_checks = [c for c in result.checks if c.status.value == "present"]
     missing_checks = [c for c in result.checks if c.status.value == "missing"]
     unclear_checks = [c for c in result.checks if c.status.value == "unclear"]
 
     sections = []
 
-    if missing_checks:
-        lines = ["❌ **Missing:**"]
+    # Issues: missing + unclear + warnings combined
+    issues = []
+    for check in missing_checks:
+        issue = f"- {check.requirement}"
+        if check.comment:
+            issue += f" - {check.comment}"
+        issues.append(issue)
+    for check in unclear_checks:
+        issue = f"- {check.requirement}"
+        if check.found_value:
+            issue += f" ({check.found_value})"
+        if check.comment:
+            issue += f" - {check.comment}"
+        issues.append(issue)
+    for warning in (result.warnings or []):
+        issues.append(f"- {warning}")
+
+    if issues:
+        sections.append("Issues to fix:\n" + "\n".join(issues))
+
+    # Action items
+    if missing_checks or unclear_checks or result.warnings:
+        actions = []
         for check in missing_checks:
-            lines.append(f"- {check.requirement}")
-            if check.comment:
-                lines.append(f"  {check.comment}")
-        sections.append("\r\n".join(lines))
-
-    if unclear_checks:
-        lines = ["⚠️ **Unclear:**"]
+            actions.append(f"- Add {check.requirement} to the invoice")
         for check in unclear_checks:
-            line = f"- {check.requirement}"
-            if check.found_value:
-                line += f" ({check.found_value})"
-            lines.append(line)
-        sections.append("\r\n".join(lines))
+            actions.append(f"- Verify {check.requirement}")
+        if actions:
+            sections.append("Actions required:\n" + "\n".join(actions))
 
+    # Found items
     if present_checks:
-        lines = ["✅ **Found:**"]
+        found_lines = []
         for check in present_checks:
             line = f"- {check.requirement}"
             if check.found_value:
                 line += f": {check.found_value}"
-            lines.append(line)
-        sections.append("\r\n".join(lines))
+            found_lines.append(line)
+        sections.append("Found:\n" + "\n".join(found_lines))
 
-    if result.warnings:
-        lines = ["⚠️ **Warnings:**"]
-        for warning in result.warnings:
-            lines.append(f"- {warning}")
-        sections.append("\r\n".join(lines))
-
-    logs_text = "\r\n\r\n".join(sections)
+    logs_text = "\n\n".join(sections)
 
     return {
         "status": status,
