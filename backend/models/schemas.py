@@ -99,4 +99,4 @@ class InvoicePayload(BaseModel):
     contentUrl: Optional[str] = None  # URL to download the PDF from (e.g. Copilot Studio attachment URL)
     name: str = "invoice.pdf"  # Filename
     invoice_type: InvoiceType = InvoiceType.PAYPAL
-    language: Language = Language.DANISH
+    language: Language = Language.ENGLISH

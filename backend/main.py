@@ -240,30 +240,47 @@ async def analyze_invoice_json(payload: InvoicePayload):
     # Transform result to Copilot-compatible format
     status = "pass" if result.overall_status.value == "approved" else "fail"
 
-    # Build readable logs string for Copilot Studio chat display
-    log_lines = []
-    log_lines.append(f"Overall: {result.overall_status.value}")
-    log_lines.append(f"Invoice type: {result.invoice_type.value}")
+    # Build readable logs for Copilot Studio chat display
+    # Group checks by status for cleaner output
+    present_checks = [c for c in result.checks if c.status.value == "present"]
+    missing_checks = [c for c in result.checks if c.status.value == "missing"]
+    unclear_checks = [c for c in result.checks if c.status.value == "unclear"]
 
-    if result.missing_items:
-        log_lines.append(f"\nMissing items:")
-        for item in result.missing_items:
-            log_lines.append(f"  - {item}")
+    sections = []
+
+    if missing_checks:
+        lines = ["❌ **Missing:**"]
+        for check in missing_checks:
+            lines.append(f"- {check.requirement}")
+            if check.comment:
+                lines.append(f"  {check.comment}")
+        sections.append("\r\n".join(lines))
+
+    if unclear_checks:
+        lines = ["⚠️ **Unclear:**"]
+        for check in unclear_checks:
+            line = f"- {check.requirement}"
+            if check.found_value:
+                line += f" ({check.found_value})"
+            lines.append(line)
+        sections.append("\r\n".join(lines))
+
+    if present_checks:
+        lines = ["✅ **Found:**"]
+        for check in present_checks:
+            line = f"- {check.requirement}"
+            if check.found_value:
+                line += f": {check.found_value}"
+            lines.append(line)
+        sections.append("\r\n".join(lines))
 
     if result.warnings:
-        log_lines.append(f"\nWarnings:")
+        lines = ["⚠️ **Warnings:**"]
         for warning in result.warnings:
-            log_lines.append(f"  - {warning}")
+            lines.append(f"- {warning}")
+        sections.append("\r\n".join(lines))
 
-    log_lines.append(f"\nChecks:")
-    for check in result.checks:
-        icon = "✅" if check.status.value == "present" else "❌" if check.status.value == "missing" else "⚠️"
-        line = f"  {icon} {check.requirement}: {check.status.value}"
-        if check.found_value:
-            line += f" ({check.found_value})"
-        log_lines.append(line)
-
-    logs_text = "\n".join(log_lines)
+    logs_text = "\r\n\r\n".join(sections)
 
     return {
         "status": status,
