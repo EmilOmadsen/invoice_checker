@@ -247,37 +247,30 @@ async def analyze_invoice_json(payload: InvoicePayload):
 
     sections = []
 
-    # Issues: missing + unclear + warnings combined
-    issues = []
+    # Errors section: missing + unclear + warnings - these are all errors
+    errors = []
     for check in missing_checks:
-        issue = f"- {check.requirement}"
+        error = f"- MISSING: {check.requirement}"
         if check.comment:
-            issue += f" - {check.comment}"
-        issues.append(issue)
+            error += f"\n  Reason: {check.comment}"
+        error += f"\n  Fix: Please add {check.requirement.lower()} to the invoice."
+        errors.append(error)
     for check in unclear_checks:
-        issue = f"- {check.requirement}"
+        error = f"- ERROR: {check.requirement}"
         if check.found_value:
-            issue += f" ({check.found_value})"
+            error += f" (found: {check.found_value})"
         if check.comment:
-            issue += f" - {check.comment}"
-        issues.append(issue)
+            error += f"\n  Reason: {check.comment}"
+        error += f"\n  Fix: Please correct or clarify {check.requirement.lower()} on the invoice."
+        errors.append(error)
     for warning in (result.warnings or []):
-        issues.append(f"- {warning}")
+        errors.append(f"- WARNING: {warning}")
 
-    if issues:
-        sections.append("Issues to fix:\n" + "\n".join(issues))
+    if errors:
+        error_count = len(errors)
+        sections.append(f"Errors ({error_count}):\n" + "\n".join(errors))
 
-    # Action items
-    if missing_checks or unclear_checks or result.warnings:
-        actions = []
-        for check in missing_checks:
-            actions.append(f"- Add {check.requirement} to the invoice")
-        for check in unclear_checks:
-            actions.append(f"- Verify {check.requirement}")
-        if actions:
-            sections.append("Actions required:\n" + "\n".join(actions))
-
-    # Found items
+    # Approved items
     if present_checks:
         found_lines = []
         for check in present_checks:
@@ -285,7 +278,7 @@ async def analyze_invoice_json(payload: InvoicePayload):
             if check.found_value:
                 line += f": {check.found_value}"
             found_lines.append(line)
-        sections.append("Found:\n" + "\n".join(found_lines))
+        sections.append(f"Approved ({len(present_checks)}):\n" + "\n".join(found_lines))
 
     logs_text = "\n\n".join(sections)
 
