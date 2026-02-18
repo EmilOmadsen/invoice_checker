@@ -1,13 +1,17 @@
 import os
 import base64
+import logging
 from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+import httpx
 
 from services.pdf_parser import extract_text_from_pdf, pdf_to_images_base64
 from services.ai_validator import validate_invoice, validate_invoice_with_image
 from models.schemas import ValidationResult, InvoiceType, Language, InvoicePayload
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file in the same directory as this file
 env_path = Path(__file__).parent / ".env"
@@ -154,20 +158,42 @@ async def analyze_invoice_json(payload: InvoicePayload):
     - **status**: "pass" or "fail"
     - **logs**: Detailed validation results
     """
-    # Decode base64 content
-    try:
-        content = base64.b64decode(payload.contentBytes)
-    except Exception:
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid base64 file content"
-        )
+    # Get PDF content from either contentBytes or contentUrl
+    content = b""
 
-    # Check if decoded content is empty
+    if payload.contentBytes:
+        # Decode base64 content
+        try:
+            content = base64.b64decode(payload.contentBytes)
+        except Exception:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid base64 file content"
+            )
+
+    if not content and payload.contentUrl:
+        # Download file from URL (e.g. Copilot Studio attachment URL)
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.get(payload.contentUrl)
+                response.raise_for_status()
+                content = response.content
+                logger.info(f"Downloaded {len(content)} bytes from contentUrl")
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to download file from URL (HTTP {e.response.status_code})"
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to download file from URL: {str(e)}"
+            )
+
     if not content:
         raise HTTPException(
             status_code=400,
-            detail="Decoded file content is empty"
+            detail="No file content provided. Supply either 'contentBytes' (base64) or 'contentUrl'."
         )
 
     # Validate file extension
@@ -214,24 +240,54 @@ async def analyze_invoice_json(payload: InvoicePayload):
     # Transform result to Copilot-compatible format
     status = "pass" if result.overall_status.value == "approved" else "fail"
 
+    # Build readable logs string for Copilot Studio chat display
+    log_lines = []
+    log_lines.append(f"Overall: {result.overall_status.value}")
+    log_lines.append(f"Invoice type: {result.invoice_type.value}")
+
+    if result.missing_items:
+        log_lines.append(f"\nMissing items:")
+        for item in result.missing_items:
+            log_lines.append(f"  - {item}")
+
+    if result.warnings:
+        log_lines.append(f"\nWarnings:")
+        for warning in result.warnings:
+            log_lines.append(f"  - {warning}")
+
+    log_lines.append(f"\nChecks:")
+    for check in result.checks:
+        icon = "✅" if check.status.value == "present" else "❌" if check.status.value == "missing" else "⚠️"
+        line = f"  {icon} {check.requirement}: {check.status.value}"
+        if check.found_value:
+            line += f" ({check.found_value})"
+        log_lines.append(line)
+
+    logs_text = "\n".join(log_lines)
+
     return {
         "status": status,
-        "logs": {
-            "overall_status": result.overall_status.value,
-            "invoice_type": result.invoice_type.value,
-            "checks": [
-                {
-                    "requirement": check.requirement,
-                    "status": check.status.value,
-                    "found_value": check.found_value,
-                    "comment": check.comment
-                }
-                for check in result.checks
-            ],
-            "missing_items": result.missing_items,
-            "warnings": result.warnings,
-            "summary": result.summary,
-            "extracted_data": result.extracted_data.model_dump() if result.extracted_data else None
+        "logs": logs_text,
+        "summary": result.summary or ""
+    }
+
+
+@app.post("/api/test-connection")
+async def test_connection(payload: InvoicePayload):
+    """
+    Debug endpoint to test connectivity from Power Automate.
+    Returns info about what was received without calling AI.
+    """
+    return {
+        "status": "ok",
+        "received": {
+            "has_contentBytes": bool(payload.contentBytes),
+            "contentBytes_length": len(payload.contentBytes) if payload.contentBytes else 0,
+            "has_contentUrl": bool(payload.contentUrl),
+            "contentUrl": payload.contentUrl[:100] if payload.contentUrl else None,
+            "name": payload.name,
+            "invoice_type": payload.invoice_type.value,
+            "language": payload.language.value,
         }
     }
 
