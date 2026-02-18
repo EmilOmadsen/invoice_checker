@@ -76,13 +76,23 @@ VIGTIGE REGLER:
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
 - VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
 
+## KENDTE KORREKTE VÆRDIER FOR THE LABEL SUNDAY
+Brug disse PRÆCISE værdier i fix_recommendation når det relaterede felt mangler eller er forkert:
+- Firmanavn: "The Label Sunday ApS"
+- Adresse: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## VIGTIGT: RETTELSESANBEFALINGER
-For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
+For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor.
+- For felter relateret til The Label Sunday (modtager/køber): Inkludér ALTID de korrekte værdier fra listen ovenfor.
+- For felter relateret til afsender/creator: Fortæl dem det forventede format med et eksempel.
+- Hvis en værdi er til stede men STAVET FORKERT eller FORKERT, fortæl brugeren den præcise korrekte stavning/værdi.
 
 Eksempler på GODE fix_recommendation:
-- "Tilføj modtagerens firmanavn 'The Label Sunday ApS' og adresse 'Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' under en 'Send faktura til' sektion."
-- "Tilføj din fødselsdato i bemærkninger, f.eks.: 'Fødselsdato: 1995-03-15'"
-- "Tilføj dit skattenummer med landekode i bemærkninger, f.eks.: 'Skattenummer (SE): 123456-7890'"
+- "Modtagerens firmanavn mangler. Tilføj 'The Label Sunday ApS' i 'Send faktura til' sektionen."
+- "Modtagerens adresse er stavet forkert. Den korrekte adresse er: 'Vognmagergade 7, 6., 1120 Copenhagen K, Denmark'"
+- "Tilføj din fødselsdato i bemærkninger, format: 'Fødselsdato: ÅÅÅÅ-MM-DD'"
+- "Tilføj dit fulde skattenummer med landekode i bemærkninger, format: 'Skattenummer (XX): [dit fulde skattenummer]'"
 
 Eksempler på DÅRLIGE fix_recommendation (for vage - GØR IKKE DETTE):
 - "Tilføj venligst modtagers firma på fakturaen."
@@ -100,7 +110,7 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
       "comment": "Kort forklaring på dansk",
-      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler på hvordan problemet løses. null hvis status er present."
+      "fix_recommendation": "Specifik instruktion med korrekte værdier. For Label Sunday felter brug de kendte korrekte værdier. For afsender felter vis det forventede format. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende eller ugyldige felter"],
@@ -163,15 +173,25 @@ IMPORTANT RULES:
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
 - IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
 
+## KNOWN CORRECT VALUES FOR THE LABEL SUNDAY
+Use these EXACT values in fix_recommendation when the related field is missing or incorrect:
+- Company name: "The Label Sunday ApS"
+- Address: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## CRITICAL: FIX RECOMMENDATIONS
-For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
+For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where.
+- For fields related to The Label Sunday (recipient/buyer): ALWAYS include the correct values from the list above.
+- For fields related to the sender/creator: tell them what format is expected, with a placeholder example.
+- If a value is present but MISSPELLED or INCORRECT, tell the user the exact correct spelling/value.
 
 Examples of GOOD fix_recommendation:
-- "Add the recipient company name 'The Label Sunday ApS' and address 'Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' to the invoice under a 'Bill To' or 'Send Invoice To' section."
-- "Add your date of birth in the Notes section, e.g.: 'Date of birth: 1995-03-15'"
-- "Add your tax identification number with country code in the Notes section, e.g.: 'Personal tax number (SE): 123456-7890'"
-- "Add the recipient email 'info@thelabelsunday.com' in the 'Send Invoice To' field."
-- "The invoice is missing a service description. Add a clear description of the work, e.g.: 'TikTok promotion / 2 videos for @brandname'"
+- "The recipient company name is missing. Add 'The Label Sunday ApS' in the 'Bill To' or 'Send Invoice To' section."
+- "The recipient address is misspelled. The correct address is: 'Vognmagergade 7, 6., 1120 Copenhagen K, Denmark'"
+- "Add your date of birth in the Notes section, format: 'Date of birth: YYYY-MM-DD'"
+- "Add your full tax identification number with country code in the Notes section, format: 'Personal tax number (XX): [your full tax number]'"
+- "The recipient email should be 'info@thelabelsunday.com' in the 'Send Invoice To' field."
+- "Add a clear description of the work performed, e.g.: 'TikTok promotion / 2 videos for @brandname'"
 
 Examples of BAD fix_recommendation (too vague - DO NOT do this):
 - "Please add recipient company to the invoice."
@@ -190,7 +210,7 @@ You MUST respond with ONLY valid JSON in this exact format:
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
       "comment": "Brief explanation in English",
-      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this issue. null if status is present."
+      "fix_recommendation": "Specific, actionable instruction with exact correct values. For Label Sunday fields use the known correct values. For sender fields show the expected format. null if status is present."
     }}
   ],
   "missing_items": ["List of missing or invalid fields"],
@@ -277,17 +297,17 @@ VIGTIGE REGLER:
 - Alle tekster skal være på DANSK
 - VIGTIGT: Adresse og Postnummer+by er TO SEPARATE felter. Hvis et af dem mangler, skal det rapporteres som et separat manglende felt i missing_items og checks.
 
+## KENDTE KORREKTE VÆRDIER FOR THE LABEL SUNDAY
+Brug disse PRÆCISE værdier i fix_recommendation når det relaterede felt mangler eller er forkert:
+- Firmanavn: "The Label Sunday ApS"
+- Adresse: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## VIGTIGT: RETTELSESANBEFALINGER
-For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
-
-Eksempler på GODE fix_recommendation:
-- "Tilføj 'The Label Sunday ApS, Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' som modtager/køber på fakturaen."
-- "Tilføj din fulde gadeadresse (f.eks.: 'Storgatan 123') i betalingsmodtager-sektionen."
-- "Tilføj din banks SWIFT/BIC-kode (f.eks.: 'NDEASESS') ved siden af dit IBAN-nummer."
-
-Eksempler på DÅRLIGE fix_recommendation (for vage - GØR IKKE DETTE):
-- "Tilføj venligst modtagers adresse."
-- "Tilføj bankoplysninger til fakturaen."
+For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation.
+- For felter relateret til The Label Sunday (modtager/køber): Inkludér ALTID de korrekte værdier fra listen ovenfor.
+- For felter relateret til betalingsmodtager/afsender: Fortæl dem det forventede format.
+- Hvis en værdi er STAVET FORKERT, fortæl brugeren den præcise korrekte stavning.
 
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
@@ -301,7 +321,7 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
       "comment": "Kort forklaring på dansk",
-      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler på hvordan problemet løses. null hvis status er present."
+      "fix_recommendation": "Specifik instruktion med korrekte værdier. For Label Sunday felter brug de kendte korrekte værdier. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende PÅKRÆVEDE felter - ignorer valgfrie felter"],
@@ -359,18 +379,17 @@ IMPORTANT RULES:
 - All text responses must be in ENGLISH
 - IMPORTANT: Address and Postal code+city are TWO SEPARATE fields. If one is missing, it should be reported as a separate missing item in missing_items and checks.
 
+## KNOWN CORRECT VALUES FOR THE LABEL SUNDAY
+Use these EXACT values in fix_recommendation when the related field is missing or incorrect:
+- Company name: "The Label Sunday ApS"
+- Address: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## CRITICAL: FIX RECOMMENDATIONS
-For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
-
-Examples of GOOD fix_recommendation:
-- "Add 'The Label Sunday ApS, Vognmagergade 7, 6., 1120 Copenhagen K, Denmark' as the recipient/buyer on the invoice."
-- "Add your full street address (e.g.: '123 Main Street') in the payment recipient section."
-- "Add your bank's SWIFT/BIC code (e.g.: 'NDEASESS') next to your IBAN number."
-- "Add your date of birth, e.g.: 'Date of birth: 1995-03-15'"
-
-Examples of BAD fix_recommendation (too vague - DO NOT do this):
-- "Please add the recipient address."
-- "Add bank details to the invoice."
+For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation.
+- For fields related to The Label Sunday (recipient/buyer): ALWAYS include the correct values from the list above.
+- For fields related to the payment recipient/sender: tell them the expected format.
+- If a value is MISSPELLED, tell the user the exact correct spelling.
 
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
@@ -384,7 +403,7 @@ You MUST respond with ONLY valid JSON in this exact format:
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
       "comment": "Brief explanation in English",
-      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this issue. null if status is present."
+      "fix_recommendation": "Specific instruction with correct values. For Label Sunday fields use the known correct values. null if status is present."
     }}
   ],
   "missing_items": ["List of missing REQUIRED fields - ignore optional fields"],
@@ -519,8 +538,13 @@ VIGTIGE REGLER:
 - VIGTIGT: Skattenummer/TIN kan være angivet på flere måder: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number" osv. Alle disse opfylder kravet om skattenummer.
 - VIGTIGT: Fremtidige datoer er acceptable - flager IKKE fakturadatoer i fremtiden som problemer.
 
+## KENDTE KORREKTE VÆRDIER FOR THE LABEL SUNDAY
+- Firmanavn: "The Label Sunday ApS"
+- Adresse: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## VIGTIGT: RETTELSESANBEFALINGER
-For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
+For HVERT tjek der er "missing" eller "unclear", giv en specifik fix_recommendation med korrekte værdier. Hvis en værdi er STAVET FORKERT, fortæl den korrekte stavning.
 
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
@@ -534,7 +558,7 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
       "comment": "Kort forklaring på dansk",
-      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler. null hvis status er present."
+      "fix_recommendation": "Specifik instruktion med korrekte værdier. For Label Sunday felter brug de kendte korrekte værdier ovenfor. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende eller ugyldige felter"],
@@ -586,8 +610,13 @@ IMPORTANT RULES:
 - IMPORTANT: Tax number/TIN can be indicated in various ways: "skattenummer", "tax number", "TIN", "CPR", "personnummer", "personal tax number", "social security number", etc. All of these fulfill the tax number requirement.
 - IMPORTANT: Future dates are acceptable - do NOT flag invoice dates in the future as issues.
 
+## KNOWN CORRECT VALUES FOR THE LABEL SUNDAY
+- Company name: "The Label Sunday ApS"
+- Address: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## CRITICAL: FIX RECOMMENDATIONS
-For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
+For EVERY check that is "missing" or "unclear", provide a specific fix_recommendation with correct values. If a value is MISSPELLED, tell the user the exact correct spelling.
 
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
@@ -601,7 +630,7 @@ You MUST respond with ONLY valid JSON in this exact format:
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
       "comment": "Brief explanation in English",
-      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this. null if status is present."
+      "fix_recommendation": "Specific instruction with correct values. For Label Sunday fields use the known correct values above. null if status is present."
     }}
   ],
   "missing_items": ["List of missing or invalid fields"],
@@ -677,8 +706,13 @@ VIGTIGE REGLER:
 - Alle tekster skal være på DANSK
 - VIGTIGT: Adresse og Postnummer+by er TO SEPARATE felter. Hvis et af dem mangler, skal det rapporteres som et separat manglende felt i missing_items og checks.
 
+## KENDTE KORREKTE VÆRDIER FOR THE LABEL SUNDAY
+- Firmanavn: "The Label Sunday ApS"
+- Adresse: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## VIGTIGT: RETTELSESANBEFALINGER
-For HVERT tjek der er "missing" eller "unclear", SKAL du give en specifik, handlingsrettet fix_recommendation der fortæller brugeren PRÆCIS hvad de skal skrive og hvor. Brug konkrete eksempler med korrekte værdier.
+For HVERT tjek der er "missing" eller "unclear", giv en specifik fix_recommendation med korrekte værdier. Hvis en værdi er STAVET FORKERT, fortæl den korrekte stavning.
 
 ## PÅKRÆVET OUTPUT FORMAT (KUN JSON)
 
@@ -692,7 +726,7 @@ Du SKAL svare med UDELUKKENDE valid JSON i dette præcise format:
       "status": "present" | "missing" | "unclear",
       "found_value": "Værdien fundet i fakturaen, eller null hvis ikke fundet",
       "comment": "Kort forklaring på dansk",
-      "fix_recommendation": "Specifik, handlingsrettet instruktion med præcise værdier/eksempler. null hvis status er present."
+      "fix_recommendation": "Specifik instruktion med korrekte værdier. For Label Sunday felter brug de kendte korrekte værdier ovenfor. null hvis status er present."
     }}
   ],
   "missing_items": ["Liste over manglende PÅKRÆVEDE felter - ignorer valgfrie felter"],
@@ -744,8 +778,13 @@ IMPORTANT RULES:
 - All text responses must be in ENGLISH
 - IMPORTANT: Address and Postal code+city are TWO SEPARATE fields. If one is missing, it should be reported as a separate missing item in missing_items and checks.
 
+## KNOWN CORRECT VALUES FOR THE LABEL SUNDAY
+- Company name: "The Label Sunday ApS"
+- Address: "Vognmagergade 7, 6., 1120 Copenhagen K, Denmark"
+- Email: "info@thelabelsunday.com"
+
 ## CRITICAL: FIX RECOMMENDATIONS
-For EVERY check that is "missing" or "unclear", you MUST provide a specific, actionable fix_recommendation that tells the creator EXACTLY what to write and where. Use concrete examples with correct values.
+For EVERY check that is "missing" or "unclear", provide a specific fix_recommendation with correct values. If a value is MISSPELLED, tell the user the exact correct spelling.
 
 ## REQUIRED OUTPUT FORMAT (JSON ONLY)
 
@@ -759,7 +798,7 @@ You MUST respond with ONLY valid JSON in this exact format:
       "status": "present" | "missing" | "unclear",
       "found_value": "The value found in the invoice, or null if not found",
       "comment": "Brief explanation in English",
-      "fix_recommendation": "Specific, actionable instruction with exact values/examples on how to fix this. null if status is present."
+      "fix_recommendation": "Specific instruction with correct values. For Label Sunday fields use the known correct values above. null if status is present."
     }}
   ],
   "missing_items": ["List of missing REQUIRED fields - ignore optional fields"],
