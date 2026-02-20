@@ -261,46 +261,77 @@ async def analyze_invoice_json(payload: InvoicePayload):
     missing_checks = [c for c in result.checks if c.status.value == "missing"]
     unclear_checks = [c for c in result.checks if c.status.value == "unclear"]
 
-    # Collect errors and fixes
-    error_lines = []
-    fix_lines = []
+    # Collect issues: each issue paired with its fix
+    issues = []
 
     for check in missing_checks:
-        error_lines.append(f"❌ Missing: {check.requirement}")
-        if check.fix_recommendation:
-            fix_lines.append(f"🔧 {check.fix_recommendation}")
-        else:
-            fix_lines.append(f"🔧 Add {check.requirement.lower()} to the invoice")
+        fix = check.fix_recommendation or f"Add {check.requirement.lower()} to the invoice"
+        issues.append({
+            "icon": "❌",
+            "label": f"Missing: {check.requirement}",
+            "fix": fix
+        })
 
     for check in unclear_checks:
         label = check.requirement
         if check.found_value:
             label += f" (found: {check.found_value})"
-        error_lines.append(f"⚠️ Incorrect: {label}")
-        if check.fix_recommendation:
-            fix_lines.append(f"🔧 {check.fix_recommendation}")
-        else:
-            fix_lines.append(f"🔧 Correct {check.requirement.lower()} on the invoice")
+        fix = check.fix_recommendation or f"Correct {check.requirement.lower()} on the invoice"
+        issues.append({
+            "icon": "⚠️",
+            "label": f"Incorrect: {label}",
+            "fix": fix
+        })
 
     for warning in (result.warnings or []):
-        error_lines.append(f"⚠️ {warning}")
+        issues.append({
+            "icon": "⚠️",
+            "label": warning,
+            "fix": None
+        })
 
-    # Build output
-    if error_lines:
-        total_checked = len(present_checks) + len(missing_checks) + len(unclear_checks)
-        passed = len(present_checks)
+    # Build clean output
+    total_checked = len(present_checks) + len(missing_checks) + len(unclear_checks)
+    passed = len(present_checks)
 
-        logs_text = f"✅ {passed}/{total_checked} checks passed\n\n"
-        logs_text += f"🚨 Issues ({len(error_lines)}):\n" + "\n".join(error_lines)
-        logs_text += f"\n\n📋 How to fix:\n" + "\n".join(fix_lines)
+    if issues:
+        lines = []
+        lines.append(f"**{passed}/{total_checked} checks passed**")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # Issues section
+        lines.append(f"**🚨 Issues ({len(issues)})**")
+        lines.append("")
+        for issue in issues:
+            lines.append(f"{issue['icon']} {issue['label']}")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # Fixes section - only for issues that have fixes
+        fixes = [issue for issue in issues if issue["fix"]]
+        if fixes:
+            lines.append(f"**🔧 How to fix**")
+            lines.append("")
+            for i, issue in enumerate(fixes, 1):
+                lines.append(f"{i}. {issue['fix']}")
+
+        logs_text = "\n".join(lines)
     else:
-        total_checked = len(present_checks)
-        logs_text = f"✅ All {total_checked} checks passed! Invoice looks good."
+        logs_text = f"**✅ All {total_checked} checks passed!**\n\nInvoice looks good — no issues found."
+
+    # Build short summary
+    if issues:
+        summary_text = f"{len(issues)} issues found. {passed}/{total_checked} checks passed."
+    else:
+        summary_text = f"All {total_checked} checks passed."
 
     return {
         "status": status,
         "logs": logs_text,
-        "summary": result.summary or ""
+        "summary": summary_text
     }
 
 
