@@ -9,26 +9,41 @@ import type { InvoiceType, Language } from "./types/invoice";
 
 function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [invoiceUrl, setInvoiceUrl] = useState("");
   const [invoiceType, setInvoiceType] = useState<InvoiceType>("paypal");
   const [language, setLanguage] = useState<Language>("da");
-  const { result, isLoading, error, analyzeInvoice, reset } =
+  const { result, isLoading, error, analyzeInvoice, analyzeInvoiceUrl, reset } =
     useInvoiceAnalysis();
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
+    setInvoiceUrl("");
+    reset();
+  };
+
+  const handleUrlChange = (url: string) => {
+    setInvoiceUrl(url);
+    if (url) {
+      setSelectedFile(null);
+    }
     reset();
   };
 
   const handleAnalyze = async () => {
-    if (selectedFile) {
+    if (invoiceUrl.trim()) {
+      await analyzeInvoiceUrl(invoiceUrl.trim(), invoiceType, language);
+    } else if (selectedFile) {
       await analyzeInvoice(selectedFile, invoiceType, language);
     }
   };
 
   const handleReset = () => {
     setSelectedFile(null);
+    setInvoiceUrl("");
     reset();
   };
+
+  const hasInput = !!selectedFile || !!invoiceUrl.trim();
 
   const handleTypeChange = (type: InvoiceType) => {
     setInvoiceType(type);
@@ -102,7 +117,7 @@ function App() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               {t(language, "uploadInvoice")}
             </h2>
-            <FileUpload onFileSelect={handleFileSelect} disabled={isLoading} />
+            <FileUpload onFileSelect={handleFileSelect} disabled={isLoading || !!invoiceUrl.trim()} />
 
             {/* Selected file info */}
             {selectedFile && (
@@ -129,15 +144,57 @@ function App() {
               </div>
             )}
 
+            {/* Separator */}
+            <div className="flex items-center gap-4 my-5">
+              <div className="flex-1 border-t border-gray-200" />
+              <span className="text-sm text-gray-400">{t(language, "orInvoiceLink")}</span>
+              <div className="flex-1 border-t border-gray-200" />
+            </div>
+
+            {/* Invoice URL input */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </div>
+              <input
+                type="url"
+                value={invoiceUrl}
+                onChange={(e) => handleUrlChange(e.target.value)}
+                disabled={isLoading}
+                placeholder={t(language, "invoiceLinkPlaceholder")}
+                className={`
+                  w-full pl-10 pr-4 py-3 border rounded-lg text-sm transition-colors
+                  ${invoiceUrl.trim()
+                    ? "border-blue-300 bg-blue-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    : "border-gray-300 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  }
+                  ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
+                  outline-none
+                `}
+              />
+              {invoiceUrl.trim() && (
+                <button
+                  onClick={() => handleUrlChange("")}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
             {/* Action Buttons */}
             <div className="mt-6 flex gap-3">
               <button
                 onClick={handleAnalyze}
-                disabled={!selectedFile || isLoading}
+                disabled={!hasInput || isLoading}
                 className={`
                   flex-1 py-3 px-6 rounded-lg font-medium text-white transition-all
                   ${
-                    selectedFile && !isLoading
+                    hasInput && !isLoading
                       ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
                       : "bg-gray-300 cursor-not-allowed"
                   }
@@ -164,14 +221,14 @@ function App() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    {t(language, "analyzing")}
+                    {invoiceUrl.trim() ? t(language, "analyzingUrl") : t(language, "analyzing")}
                   </span>
                 ) : (
                   `${t(language, "analyzeAs")} ${invoiceType === "paypal" ? t(language, "paypal") : t(language, "bankTransfer")}`
                 )}
               </button>
 
-              {(selectedFile || result) && (
+              {(hasInput || result) && (
                 <button
                   onClick={handleReset}
                   disabled={isLoading}

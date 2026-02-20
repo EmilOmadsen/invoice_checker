@@ -16,8 +16,11 @@ export const translations = {
 
     // Upload section
     uploadInvoice: "Upload faktura",
+    orInvoiceLink: "eller indsæt PayPal faktura-link",
+    invoiceLinkPlaceholder: "https://www.paypal.com/invoice/payerView/details/INV2-...",
     analyzeAs: "Analyser som",
     analyzing: "Analyserer...",
+    analyzingUrl: "Henter og analyserer faktura fra link...",
     reset: "Nulstil",
 
     // Results
@@ -67,8 +70,11 @@ export const translations = {
 
     // Upload section
     uploadInvoice: "Upload Invoice",
+    orInvoiceLink: "or paste PayPal invoice link",
+    invoiceLinkPlaceholder: "https://www.paypal.com/invoice/payerView/details/INV2-...",
     analyzeAs: "Analyze as",
     analyzing: "Analyzing...",
+    analyzingUrl: "Fetching and analyzing invoice from link...",
     reset: "Reset",
 
     // Results
