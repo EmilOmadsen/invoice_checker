@@ -98,6 +98,7 @@ class InvoicePayload(BaseModel):
     """Payload for Copilot Agent Flow JSON file transfer."""
     contentBytes: str = ""  # Base64-encoded PDF content (optional if contentUrl is provided)
     contentUrl: Optional[str] = None  # URL to download the PDF from (e.g. Copilot Studio attachment URL)
+    invoiceUrl: Optional[str] = None  # PayPal invoice URL - will be rendered to PDF via Playwright
     name: str = "invoice.pdf"  # Filename
     invoice_type: InvoiceType = InvoiceType.PAYPAL
     language: Language = Language.ENGLISH

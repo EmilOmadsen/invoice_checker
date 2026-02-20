@@ -190,21 +190,37 @@ async def analyze_invoice_json(payload: InvoicePayload):
                 detail=f"Failed to download file from URL: {str(e)}"
             )
 
+    # If no PDF content yet, try rendering invoiceUrl via Playwright
+    if not content and payload.invoiceUrl:
+        from services.url_to_pdf import fetch_pdf_from_url
+        try:
+            logger.info(f"Rendering invoice URL to PDF: {payload.invoiceUrl[:100]}")
+            content = await fetch_pdf_from_url(payload.invoiceUrl)
+            logger.info(f"Rendered PDF from URL: {len(content)} bytes")
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to render invoice URL as PDF: {str(e)}"
+            )
+
     if not content:
         raise HTTPException(
             status_code=400,
-            detail="No file content provided. Supply either 'contentBytes' (base64) or 'contentUrl'."
+            detail="No file content provided. Supply 'contentBytes' (base64), 'contentUrl', or 'invoiceUrl'."
         )
 
-    # Validate file extension
-    allowed_extensions = {".pdf"}
-    file_ext = os.path.splitext(payload.name)[1].lower() if payload.name else ""
+    # Validate file extension (skip for invoiceUrl since we generated the PDF)
+    if not payload.invoiceUrl:
+        allowed_extensions = {".pdf"}
+        file_ext = os.path.splitext(payload.name)[1].lower() if payload.name else ""
 
-    if file_ext not in allowed_extensions:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid file type. Allowed types: {', '.join(allowed_extensions)}"
-        )
+        if file_ext not in allowed_extensions:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid file type. Allowed types: {', '.join(allowed_extensions)}"
+            )
 
     # Extract text from PDF
     try:
@@ -308,6 +324,8 @@ async def test_connection(payload: InvoicePayload):
             "contentBytes_length": len(payload.contentBytes) if payload.contentBytes else 0,
             "has_contentUrl": bool(payload.contentUrl),
             "contentUrl": payload.contentUrl[:100] if payload.contentUrl else None,
+            "has_invoiceUrl": bool(payload.invoiceUrl),
+            "invoiceUrl": payload.invoiceUrl[:100] if payload.invoiceUrl else None,
             "name": payload.name,
             "invoice_type": payload.invoice_type.value,
             "language": payload.language.value,
