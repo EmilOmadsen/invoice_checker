@@ -295,32 +295,29 @@ async def analyze_invoice_json(payload: InvoicePayload):
     passed = len(present_checks)
 
     if issues:
-        lines = []
-        lines.append(f"**{passed}/{total_checked} checks passed**")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
+        parts = []
+        parts.append(f"✅ {passed}/{total_checked} checks passed")
+        parts.append("")
 
-        # Issues section
-        lines.append(f"**🚨 Issues ({len(issues)})**")
-        lines.append("")
+        # Issues section - each on its own line with blank line between
+        parts.append(f"🚨 Issues found:")
+        parts.append("")
         for issue in issues:
-            lines.append(f"{issue['icon']} {issue['label']}")
-        lines.append("")
-        lines.append("---")
-        lines.append("")
+            parts.append(f"  {issue['icon']}  {issue['label']}")
+            parts.append("")
 
-        # Fixes section - only for issues that have fixes
+        # Fixes section - numbered, each on its own line
         fixes = [issue for issue in issues if issue["fix"]]
         if fixes:
-            lines.append(f"**🔧 How to fix**")
-            lines.append("")
+            parts.append(f"🔧 How to fix:")
+            parts.append("")
             for i, issue in enumerate(fixes, 1):
-                lines.append(f"{i}. {issue['fix']}")
+                parts.append(f"  {i}.  {issue['fix']}")
+                parts.append("")
 
-        logs_text = "\n".join(lines)
+        logs_text = "\n".join(parts)
     else:
-        logs_text = f"**✅ All {total_checked} checks passed!**\n\nInvoice looks good — no issues found."
+        logs_text = f"✅ All {total_checked} checks passed!\n\nInvoice looks good — no issues found."
 
     # Build short summary
     if issues:
