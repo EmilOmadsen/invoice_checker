@@ -442,7 +442,7 @@ async def validate_invoice(invoice_text: str, invoice_type: InvoiceType, languag
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
 
-    client = Anthropic(api_key=api_key)
+    client = Anthropic(api_key=api_key, max_retries=5)
 
     prompt = get_validation_prompt(invoice_text, invoice_type, language)
 
@@ -831,7 +831,7 @@ async def validate_invoice_with_image(images_base64: list[str], invoice_type: In
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
 
-    client = Anthropic(api_key=api_key)
+    client = Anthropic(api_key=api_key, max_retries=5)
 
     prompt = get_vision_validation_prompt(invoice_type, language)
 
