@@ -1,9 +1,11 @@
 import os
+import re
 import base64
 import logging
 from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import httpx
 
@@ -33,6 +35,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Serve static files (help images etc.)
+static_path = Path(__file__).parent / "static"
+if static_path.exists():
+    app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+
+# Base URL for static files (auto-detect from environment or use Railway default)
+STATIC_BASE_URL = os.getenv("BASE_URL", "https://invoicechecker-production.up.railway.app") + "/static"
 
 
 @app.get("/")
@@ -261,15 +272,21 @@ async def analyze_invoice_json(payload: InvoicePayload):
     missing_checks = [c for c in result.checks if c.status.value == "missing"]
     unclear_checks = [c for c in result.checks if c.status.value == "unclear"]
 
+    # Image URLs for help screenshots
+    tax_id_img = f"{STATIC_BASE_URL}/tax-id-field.png"
+    notes_img = f"{STATIC_BASE_URL}/notes-section.png"
+
     # Collect issues: each issue paired with its fix
     issues = []
 
     for check in missing_checks:
         fix = check.fix_recommendation or f"Add {check.requirement.lower()} to the invoice"
+        req_lower = check.requirement.lower()
         issues.append({
             "icon": "❌",
             "label": f"Missing: {check.requirement}",
-            "fix": fix
+            "fix": fix,
+            "requirement": req_lower
         })
 
     for check in unclear_checks:
@@ -277,17 +294,20 @@ async def analyze_invoice_json(payload: InvoicePayload):
         if check.found_value:
             label += f" (found: {check.found_value})"
         fix = check.fix_recommendation or f"Correct {check.requirement.lower()} on the invoice"
+        req_lower = check.requirement.lower()
         issues.append({
             "icon": "⚠️",
             "label": f"Incorrect: {label}",
-            "fix": fix
+            "fix": fix,
+            "requirement": req_lower
         })
 
     for warning in (result.warnings or []):
         issues.append({
             "icon": "⚠️",
             "label": warning,
-            "fix": None
+            "fix": None,
+            "requirement": ""
         })
 
     # Build clean output
@@ -299,21 +319,44 @@ async def analyze_invoice_json(payload: InvoicePayload):
         parts.append(f"✅ {passed}/{total_checked} checks passed")
         parts.append("")
 
-        # Issues section - each on its own line with blank line between
+        # Issues section
         parts.append(f"🚨 Issues found:")
         parts.append("")
         for issue in issues:
             parts.append(f"  {issue['icon']}  {issue['label']}")
             parts.append("")
 
-        # Fixes section - numbered, each on its own line
+        # Fixes section - numbered with bold action + help images
         fixes = [issue for issue in issues if issue["fix"]]
         if fixes:
             parts.append(f"🔧 How to fix:")
             parts.append("")
             for i, issue in enumerate(fixes, 1):
-                parts.append(f"  {i}.  {issue['fix']}")
+                fix_text = issue["fix"]
+
+                # Split fix into bold action + details
+                # Bold everything before the first comma, period, or format instruction
+                bold_match = re.match(r'^(.*?(?:invoice|section|field|name))(.*)$', fix_text, re.IGNORECASE)
+                if bold_match:
+                    bold_part = bold_match.group(1).strip()
+                    rest_part = bold_match.group(2).strip()
+                    if rest_part:
+                        parts.append(f"  {i}.  **{bold_part}** {rest_part}")
+                    else:
+                        parts.append(f"  {i}.  **{bold_part}**")
+                else:
+                    parts.append(f"  {i}.  **{fix_text}**")
                 parts.append("")
+
+                # Add help image links for tax ID and birthday
+                req = issue["requirement"]
+                if "tax" in req or "tax number" in req or "tax id" in req:
+                    parts.append(f"       [📸 See where to add Tax ID]({tax_id_img})")
+                    parts.append(f"       Can't find it? [📸 Add it in the Notes section instead]({notes_img})")
+                    parts.append("")
+                elif "birth" in req or "date of birth" in req or "birthday" in req:
+                    parts.append(f"       [📸 See where to add this]({notes_img})")
+                    parts.append("")
 
         logs_text = "\n".join(parts)
     else:
