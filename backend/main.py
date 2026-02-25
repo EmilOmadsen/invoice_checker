@@ -335,8 +335,8 @@ async def analyze_invoice_json(payload: InvoicePayload):
                 fix_text = issue["fix"]
 
                 # Split fix into bold action + details
-                # Bold everything before the first comma, period, or format instruction
-                bold_match = re.match(r'^(.*?(?:invoice|section|field|name))(.*)$', fix_text, re.IGNORECASE)
+                # Bold the action verb + main subject, stop at first detail
+                bold_match = re.match(r"^(.+?(?:number|date|amount|currency|description|name|address|phone|email|birth|tax identification number|Tax ID))\b(.*)$", fix_text, re.IGNORECASE)
                 if bold_match:
                     bold_part = bold_match.group(1).strip()
                     rest_part = bold_match.group(2).strip()
