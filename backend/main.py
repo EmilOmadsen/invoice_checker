@@ -3,7 +3,7 @@ import re
 import base64
 import logging
 from pathlib import Path
-from fastapi import FastAPI, UploadFile, File, HTTPException, Form
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -44,6 +44,27 @@ if static_path.exists():
 
 # Base URL for static files (auto-detect from environment or use Railway default)
 STATIC_BASE_URL = os.getenv("BASE_URL", "https://invoicechecker-production.up.railway.app") + "/static"
+
+
+# ── Slack Bot integration (only if env vars are configured) ──
+if os.getenv("SLACK_BOT_TOKEN") and os.getenv("SLACK_SIGNING_SECRET"):
+    from slack_bolt.adapter.fastapi.async_handler import AsyncSlackRequestHandler
+    from slack_bot.app import create_slack_app
+
+    _slack_app = create_slack_app()
+    _slack_handler = AsyncSlackRequestHandler(_slack_app)
+
+    @app.post("/slack/events")
+    async def slack_events(req: Request):
+        return await _slack_handler.handle(req)
+
+    @app.get("/slack/install")
+    async def slack_install(req: Request):
+        return await _slack_handler.handle(req)
+
+    logger.info("Slack bot integration enabled")
+else:
+    logger.info("Slack bot integration disabled (SLACK_BOT_TOKEN/SLACK_SIGNING_SECRET not set)")
 
 
 @app.get("/")
